@@ -12,7 +12,6 @@ import java.io.*;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.UIManager;
 
 /**
  *
@@ -70,8 +69,7 @@ class Connection extends Thread {
     @Override
     public void run() {
         try {
-            Message message;
-            Message message2;
+            Message message;;
              /*
              * preparing output stream, send message back to client
              */
@@ -79,8 +77,12 @@ class Connection extends Thread {
             message = (Message) inputStream.readObject();
             Reader file = new Reader();
             System.out.println("From client: " + message.getString());
-            String allday;
-           
+            String str = message.getString();
+            
+            //outputStream.writeObject(new Message(file.encrypt(mee)));
+            //System.out.println( file.encryptCBC(str));
+            file.encryptCBC(str);
+            
         }
         catch(IOException ex) {
             System.out.println(ex.getMessage());
