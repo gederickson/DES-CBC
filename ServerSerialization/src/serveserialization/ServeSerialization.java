@@ -79,23 +79,8 @@ class Connection extends Thread {
             message = (Message) inputStream.readObject();
             
             System.out.println("From client: " + message.getString());
-            Reader file = new Reader();
             String allday;
-            allday = message.getString();
-            
-            if("all".equals(allday) || "All".equals(allday)){
-               
-                
-               // System.out.println(file.readAll());
-                outputStream.writeObject(new Message(file.readAll()));
-               //message2 = file.readAll();
-            }else{
-            
-                String day;
-                day = message.getString(); 
-                System.out.println( file.readDay(day));
-                outputStream.writeObject(new Message(file.readDay(day)));
-            }
+           
         }
         catch(IOException ex) {
             System.out.println(ex.getMessage());
