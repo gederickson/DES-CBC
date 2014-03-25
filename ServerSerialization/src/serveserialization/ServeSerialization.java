@@ -75,9 +75,9 @@ class Connection extends Thread {
              /*
              * preparing output stream, send message back to client
              */
-
-            message = (Message) inputStream.readObject();
             
+            message = (Message) inputStream.readObject();
+            Reader file = new Reader();
             System.out.println("From client: " + message.getString());
             String allday;
            
