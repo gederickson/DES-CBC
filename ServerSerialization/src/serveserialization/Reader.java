@@ -13,109 +13,93 @@ import messageserialization.Message;
 import java.io.*;
 
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.Cipher;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.InvalidKeyException;
+import java.security.InvalidAlgorithmParameterException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+
+import sun.misc.BASE64Encoder;
 
 /**
  *
  * @author Rickson
  */
 public class Reader 
-{
-    /*public static String initialRead()
-    {
-        //Z means: "The end of the input but for the final terminator, if any"
-        String temp = null;    
-        try 
-        {
-            String output = new Scanner(new File("file.txt")).useDelimiter("\\Z").next();
-            temp="" + output;
-        }
-        catch (IOException e) 
-        {
-            e.printStackTrace();
-        }
-        return temp;
-        
-    }
-    
-    public String readAll()
-    {
-        String temp = null;
-        temp = initialRead();
-        return temp;
-    }
-    
-
-    public String readDay( String day) 
-    {
-        String temp,message = null;
-        int i;
-        temp = initialRead();
-        String perLine [] = temp.split("\n");
-        for(i=0;i<perLine.length;i++)
-        {
-            if(perLine[i].indexOf(day) != -1)
-            {
-                message = perLine[i];
-            }
-        }
-        return message;
-    }*/
-    
+{ 
     public void encryptCBC (String str) {
+        
+        String strDataToEncrypt = new String();
+	String strCipherText = new String();
+	String strDecryptedText = new String();
+        
         try {
  
-		    KeyGenerator keygenerator = KeyGenerator.getInstance("DES");
-		    SecretKey myDesKey = keygenerator.generateKey();
- 
-		    Cipher desCipher;
+		    KeyGenerator keyGen = KeyGenerator.getInstance("DES");
+                    SecretKey secretKey = keyGen.generateKey();
  
 		    // Create the cipher 
-		    desCipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
-                    //desCipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+		    //desCipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+                    Cipher desCipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
  
 		    // Initialize the cipher for encryption
-		    desCipher.init(Cipher.ENCRYPT_MODE, myDesKey);
+		    desCipher.init(Cipher.ENCRYPT_MODE,secretKey);
  
 		    //sensitive information
 		    //byte[] text = "No body can see me".getBytes();
-                    byte[] text = str.getBytes();
+                    strDataToEncrypt = str;
+                    byte[] byteDataToEncrypt = strDataToEncrypt.getBytes();
+                    byte[] byteCipherText = desCipher.doFinal(byteDataToEncrypt);
+                    strCipherText = new BASE64Encoder().encode(byteCipherText);
  
-		    System.out.println("Text [Byte Format] : " + text);
-		    System.out.println("Text : " + new String(text));
+		    System.out.println("Hasil enkripsi dengan DES CBC : " +strCipherText);
  
-		    // Encrypt the text
-		    byte[] textEncrypted = desCipher.doFinal(text);
- 
-		    System.out.println("Text Encryted : " + textEncrypted);
  
 		    // Initialize the same cipher for decryption
-		    desCipher.init(Cipher.DECRYPT_MODE, myDesKey);
+		    desCipher.init(Cipher.DECRYPT_MODE,secretKey,desCipher.getParameters());
  
 		    // Decrypt the text
-		    byte[] textDecrypted = desCipher.doFinal(textEncrypted);
+		    byte[] byteDecryptedText = desCipher.doFinal(byteCipherText);
+                    
+                    strDecryptedText = new String(byteDecryptedText);
  
-		    System.out.println("Text Decryted : " + new String(textDecrypted));
+		    System.out.println("Hasil teks setelah didekripsi : " +strDecryptedText);
  
-		}catch(NoSuchAlgorithmException e){
-			e.printStackTrace();
-		}catch(NoSuchPaddingException e){
-			e.printStackTrace();
-		}catch(InvalidKeyException e){
-			e.printStackTrace();
-		}catch(IllegalBlockSizeException e){
-			e.printStackTrace();
-		}catch(BadPaddingException e){
-			e.printStackTrace();
-		} 
-        }
+		}catch (NoSuchAlgorithmException noSuchAlgo)
+		{
+			System.out.println(" No Such Algorithm exists " + noSuchAlgo);
+		}
+		
+			catch (NoSuchPaddingException noSuchPad)
+			{
+				System.out.println(" No Such Padding exists " + noSuchPad);
+			}
+		
+				catch (InvalidKeyException invalidKey)
+				{
+					System.out.println(" Invalid Key " + invalidKey);
+				}
+				
+				catch (BadPaddingException badPadding)
+				{
+					System.out.println(" Bad Padding " + badPadding);
+				}
+				
+				catch (IllegalBlockSizeException illegalBlockSize)
+				{
+					System.out.println(" Illegal Block Size " + illegalBlockSize);
+				}
+				
+				catch (InvalidAlgorithmParameterException invalidParam)
+				{
+					System.out.println(" Invalid Parameter " + invalidParam);
+				}
+	}
     }
 
   
